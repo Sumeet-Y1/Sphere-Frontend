@@ -1,21 +1,77 @@
-<<<<<<< HEAD
-# React + Vite
+# 🌐 Sphere Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+The official frontend for **Sphere** a modern community and news platform built with React, Vite, and Tailwind CSS.
 
-Currently, two official plugins are available:
+## ✨ Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- 🔐 JWT Authentication (Login & Register)
+- 🏠 Home Feed — posts from all communities
+- 🏘️ Communities — create, join, browse
+- 📝 Posts — create, vote, comment
+- 💬 Nested Comments
+- 📰 News Feed — categories & search
+- 🤖 AI Insights powered by Groq
+- 🔔 Real-time Notifications via WebSocket
+- 💌 Direct Messages — real-time DMs
+- 👤 User Profiles — follow, block
+- 🌙 Dark UI — black & white theme
 
-## React Compiler
+## 🛠️ Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+| Technology | Purpose |
+|------------|---------|
+| React 19 | UI Framework |
+| Vite 7 | Build Tool |
+| Tailwind CSS | Styling |
+| Axios | API Calls |
+| React Router v7 | Navigation |
+| SockJS + StompJS | WebSocket / Real-time |
 
-## Expanding the ESLint configuration
+## 🚀 Getting Started
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
-=======
-# Sphere-Frontend
-🌐 Sphere Frontend — A modern community &amp; news platform built with React + Vite + Tailwind CSS. Features real-time notifications, DMs via WebSocket, AI-powered insights, and a clean dark UI.
->>>>>>> f37f1557ff9f58827c543ccdd3591a5fc6f81865
+### Prerequisites
+- Node.js 18+
+- Sphere Backend running on `http://localhost:8080`
+
+### Installation
+```bash
+# Clone the repo
+git clone https://github.com/Sumeet-Y1/Sphere-Frontend.git
+cd Sphere-Frontend
+
+# Install dependencies
+npm install
+
+# Start dev server
+npm run dev
+```
+
+Open `http://localhost:5173` in your browser.
+
+## 📁 Project Structure
+```
+src/
+├── api/            ← Axios instance & API calls
+├── components/     ← Reusable components (Navbar, etc.)
+├── context/        ← Auth context
+├── hooks/          ← Custom hooks
+├── pages/
+│   ├── Auth/       ← Login & Register
+│   ├── Home/       ← Main feed
+│   ├── Community/  ← Communities
+│   ├── Post/       ← Post detail & create
+│   ├── Profile/    ← User profile
+│   ← News feed
+│   └── DM/         ← Direct messages
+└── utils/          ← Helper functions
+```
+
+## 🔌 Backend
+
+This frontend connects to the Sphere Spring Boot backend.
+
+Backend repo: [Sphere](https://github.com/Sumeet-Y1/Sphere)
+
+## 👨‍💻 Author
+
+Built with ❤️ by Sumeet
