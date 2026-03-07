@@ -5,6 +5,9 @@ import Register from './pages/Auth/Register'
 import Navbar from './components/Navbar'
 import Home from './pages/Home/Home'
 import CreatePost from './pages/Post/CreatePost'
+import VerifyOtp from './pages/Auth/VerifyOtp'
+import OAuth2Callback from './pages/Auth/OAuth2Callback'
+
 
 
 // ── Loading spinner (matches Sphere aesthetic) ──
@@ -42,6 +45,8 @@ function App() {
         {/* Public routes — no navbar */}
         <Route path="/login"    element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/verify-otp" element={<VerifyOtp />} />
+        <Route path="/oauth2/callback" element={<OAuth2Callback />} />
 
         {/* Protected routes — all get Navbar via Layout */}
         <Route element={<ProtectedRoute />}>
