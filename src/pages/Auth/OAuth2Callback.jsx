@@ -25,7 +25,9 @@ export default function OAuth2Callback() {
       login(token, {
         username: res.data.username,
         email: res.data.email,
-        role: res.data.role
+        role: res.data.role,
+        avatarUrl: res.data.avatarUrl,
+        authProvider: res.data.authProvider
       })
       navigate('/')
     } catch (err) {
@@ -58,7 +60,6 @@ export default function OAuth2Callback() {
         overflow: 'hidden'
       }}>
 
-        {/* Ambient glow */}
         <div style={{
           position: 'absolute',
           width: '400px', height: '400px',
@@ -69,7 +70,6 @@ export default function OAuth2Callback() {
           pointerEvents: 'none'
         }} />
 
-        {/* Decorative rings */}
         {[300, 200, 120].map((size, i) => (
           <div key={i} style={{
             position: 'absolute',
@@ -83,8 +83,6 @@ export default function OAuth2Callback() {
         ))}
 
         <div className="fade" style={{ textAlign: 'center', position: 'relative', zIndex: 1 }}>
-
-          {/* Logo */}
           <h1 style={{
             fontFamily: "'Cormorant Garamond', serif",
             fontSize: '42px',
@@ -102,7 +100,6 @@ export default function OAuth2Callback() {
             margin: '0 auto 32px'
           }} />
 
-          {/* Spinner */}
           <svg
             className="spin"
             style={{ width: 28, height: 28, margin: '0 auto 20px', display: 'block' }}
@@ -120,7 +117,6 @@ export default function OAuth2Callback() {
           }}>
             Signing you in with Google...
           </p>
-
         </div>
       </div>
     </>

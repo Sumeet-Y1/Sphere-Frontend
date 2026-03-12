@@ -3,14 +3,23 @@ import { useAuth } from './context/AuthContext'
 import Login from './pages/Auth/Login'
 import Register from './pages/Auth/Register'
 import Navbar from './components/Navbar'
+import Sidebar from './components/Sidebar'
 import Home from './pages/Home/Home'
 import CreatePost from './pages/Post/CreatePost'
 import VerifyOtp from './pages/Auth/VerifyOtp'
 import OAuth2Callback from './pages/Auth/OAuth2Callback'
+import PostDetail from './pages/Post/PostDetail'
+import Communities from './pages/Community/Communities'
+import Profile from './pages/Profile/Profile'
+import CommunityDetail from './pages/Community/CommunityDetail'
+import News from './pages/News/News'
+import DM from './pages/DM/DM'
+import ChatBot from './components/ChatBot'
+import ForgotPassword from './pages/Auth/ForgotPassword'
+import Settings from './pages/Settings/Settings'
+import { SidebarProvider } from './context/SidebarContext'
+import About from './pages/About/About'
 
-
-
-// ── Loading spinner (matches Sphere aesthetic) ──
 const Spinner = () => (
   <>
     <style>{`@keyframes spin { to { transform: rotate(360deg); } } .spin { animation: spin 1s linear infinite; }`}</style>
@@ -23,15 +32,15 @@ const Spinner = () => (
   </>
 )
 
-// ── Layout: Navbar + page content ──
 const Layout = () => (
   <>
     <Navbar />
+    <Sidebar />
+    <ChatBot />
     <Outlet />
   </>
 )
 
-// ── Redirects to /login if not authenticated ──
 const ProtectedRoute = () => {
   const { token, loading } = useAuth()
   if (loading) return <Spinner />
@@ -40,27 +49,31 @@ const ProtectedRoute = () => {
 
 function App() {
   return (
-    <div style={{ background: '#080808', minHeight: '100vh' }}>
+    <SidebarProvider><div style={{ background: '#080808', minHeight: '100vh' }}>
       <Routes>
-        {/* Public routes — no navbar */}
-        <Route path="/login"    element={<Login />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/verify-otp" element={<VerifyOtp />} />
         <Route path="/oauth2/callback" element={<OAuth2Callback />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/about" element={<About />} />
 
-        {/* Protected routes — all get Navbar via Layout */}
         <Route element={<ProtectedRoute />}>
-          <Route path="/"            element={<Home />} />
+          <Route path="/" element={<Home />} />
           <Route path="/create-post" element={<CreatePost />} />
-          <Route path="/communities" element={<div style={{ color: 'white', textAlign: 'center', paddingTop: 80 }}>Communities Coming Soon!</div>} />
-          <Route path="/news"        element={<div style={{ color: 'white', textAlign: 'center', paddingTop: 80 }}>News Coming Soon!</div>} />
-          <Route path="/dm"          element={<div style={{ color: 'white', textAlign: 'center', paddingTop: 80 }}>DMs Coming Soon!</div>} />
+          <Route path="/post/:postId" element={<PostDetail />} />
+          <Route path="/communities" element={<Communities />} />
+          <Route path="/profile/:username" element={<Profile />} />
+          <Route path="/community/:communityName" element={<CommunityDetail />} />
+          <Route path="/news" element={<News />} />
+          <Route path="/dm" element={<DM />} />
+          <Route path="/settings" element={<Settings />} />
         </Route>
 
-        {/* Fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </div>
+    </SidebarProvider>
   )
 }
 
