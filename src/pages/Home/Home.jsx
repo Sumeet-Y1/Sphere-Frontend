@@ -59,10 +59,10 @@ export default function Home() {
 
   const filteredPosts = search.trim()
     ? sortedPosts.filter(p =>
-        p.title?.toLowerCase().includes(search.toLowerCase()) ||
-        p.authorUsername?.toLowerCase().includes(search.toLowerCase()) ||
-        p.communityName?.toLowerCase().includes(search.toLowerCase())
-      )
+      p.title?.toLowerCase().includes(search.toLowerCase()) ||
+      p.authorUsername?.toLowerCase().includes(search.toLowerCase()) ||
+      p.communityName?.toLowerCase().includes(search.toLowerCase())
+    )
     : sortedPosts
 
   return (
@@ -211,6 +211,11 @@ export default function Home() {
         .ptitle:hover { color: #fff; }
         .pexc { font-size: 12px; color: rgba(255,255,255,0.3); line-height: 1.65; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 10px; }
 
+        /* Media preview in feed */
+        .feed-media-grid { display: grid; gap: 3px; margin-bottom: 10px; border-radius: 7px; overflow: hidden; }
+        .feed-media-img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
+        .feed-video-thumb { width: 100%; max-height: 180px; object-fit: cover; border-radius: 7px; margin-bottom: 10px; display: block; background: #000; }
+
         .pacts { display: flex; align-items: center; gap: 2px; }
         .pact { display: inline-flex; align-items: center; gap: 5px; padding: 4px 8px; border-radius: 6px; background: none; border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 500; color: rgba(255,255,255,0.25); text-decoration: none; transition: color 0.15s, background 0.15s; }
         .pact:hover { color: rgba(255,255,255,0.72); background: rgba(255,255,255,0.05); }
@@ -320,8 +325,53 @@ export default function Home() {
                         </Link>
                         <span className="mdt">{new Date(post.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
                       </div>
+
                       <Link to={`/post/${post.id}`} className="ptitle">{post.title}</Link>
+
+                      {/* Text content */}
                       {post.content && <p className="pexc">{post.content}</p>}
+
+                      {/* MEDIA: Photos preview */}
+                      {post.type === 'MEDIA' && post.mediaType === 'PHOTO' && post.mediaUrls?.length > 0 && (
+                        <Link to={`/post/${post.id}`} style={{ textDecoration: 'none' }}>
+                          <div
+                            className="feed-media-grid"
+                            style={{ gridTemplateColumns: `repeat(${Math.min(post.mediaUrls.length, 3)}, 1fr)` }}
+                          >
+                            {post.mediaUrls.slice(0, 3).map((url, idx) => (
+                              <img key={idx} src={url} alt="" className="feed-media-img" />
+                            ))}
+                          </div>
+                        </Link>
+                      )}
+
+                      {/* MEDIA: Video preview */}
+                      {post.type === 'MEDIA' && post.mediaType === 'VIDEO' && post.imageUrl && (
+                        <Link to={`/post/${post.id}`} style={{ textDecoration: 'none' }}>
+                          <video src={post.imageUrl} className="feed-video-thumb" muted playsInline />
+                        </Link>
+                      )}
+
+                      {/* IMAGE post */}
+                      {post.type === 'IMAGE' && post.imageUrl && (
+                        <Link to={`/post/${post.id}`} style={{ textDecoration: 'none' }}>
+                          <img src={post.imageUrl} alt="" style={{ width: '100%', maxHeight: '200px', objectFit: 'cover', borderRadius: '7px', marginBottom: '10px', display: 'block' }} />
+                        </Link>
+                      )}
+
+                      {/* LINK post */}
+                      {post.type === 'LINK' && post.linkUrl && (
+                        <a href={post.linkUrl} target="_blank" rel="noopener noreferrer"
+                          style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '7px 10px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '7px', marginBottom: '10px', textDecoration: 'none' }}
+                          onClick={e => e.stopPropagation()}
+                        >
+                          <svg width="11" height="11" fill="none" viewBox="0 0 24 24" stroke="rgba(255,255,255,0.3)">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                          </svg>
+                          <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.35)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{post.linkUrl}</span>
+                        </a>
+                      )}
+
                       <div className="pacts">
                         <Link to={`/post/${post.id}`} className="pact">
                           <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
@@ -389,11 +439,8 @@ export default function Home() {
 
               <div className="sfoot">
                 <div className="sfoot-links">
-                  
                   <Link to="/about" className="sfoot-link">About</Link>
-{['Help', 'Careers', 'Privacy', 'Terms', 'Rules', 'Blog'].map(l => <a key={l} href="#" className="sfoot-link">{l}</a>)}
-               
-               
+                  {['Help', 'Careers', 'Privacy', 'Terms', 'Rules', 'Blog'].map(l => <a key={l} href="#" className="sfoot-link">{l}</a>)}
                 </div>
                 <p className="sfoot-copy">Sphere, Inc. © 2026. All rights reserved.</p>
               </div>

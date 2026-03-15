@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sphere - Home Feed</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Public+Sans:wght@300;400;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ec5b13",
+                        "background-light": "#f8f6f6",
+                        "background-dark": "#0a0a0a",
+                        "glass-bg": "rgba(255,255,255,0.025)",
+                        "glass-border": "rgba(255,255,255,0.08)",
+                        "text-dim": "rgba(255,255,255,0.55)",
+                        "text-ghost": "rgba(255,255,255,0.35)",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"],
+                        "serif-logo": ["Public Sans", "serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "12px",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        ::-webkit-scrollbar {
+            width: 3px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        .glass-morphism {
+            background: rgba(255, 255, 255, 0.025);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-dark font-display text-slate-100 antialiased overflow-x-hidden">
+<!-- Sticky Navbar -->
+<header class="sticky top-0 z-50 w-full glass-morphism border-b border-glass-border">
+<div class="flex flex-col gap-3 px-4 py-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-2xl">rocket_launch</span>
+<h1 class="font-serif-logo text-xl font-light tracking-[0.2em] text-white uppercase">Sphere</h1>
+</div>
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-white cursor-pointer">notifications</span>
+<div class="size-8 rounded-full bg-gradient-to-tr from-purple-600 to-pink-500" data-alt="User profile purple pink gradient avatar"></div>
+</div>
+</div>
+<div class="relative w-full">
+<div class="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-text-ghost text-sm">search</span>
+</div>
+<input class="w-full h-10 pl-10 pr-4 bg-white/5 border border-white/10 rounded-[10px] text-sm text-white placeholder:text-text-ghost focus:outline-none focus:ring-1 focus:ring-primary/50 focus:border-primary/50 transition-all" placeholder="Search posts, communities, users..." type="text"/>
+</div>
+</div>
+</header>
+<main class="max-w-xl mx-auto px-4 py-4 space-y-4">
+<!-- Create Post Box -->
+<section class="glass-morphism rounded-2xl p-4">
+<div class="flex gap-3">
+<div class="size-[30px] rounded-full bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex-shrink-0" data-alt="Small purple gradient user avatar"></div>
+<div class="flex-1">
+<textarea class="w-full bg-transparent border-none p-0 text-slate-100 placeholder:text-text-ghost focus:ring-0 resize-none h-8 text-sm leading-relaxed" placeholder="What's on your mind?"></textarea>
+<div class="flex items-center justify-between mt-3 pt-3 border-t border-white/5">
+<div class="flex gap-4">
+<button class="flex items-center text-text-dim hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[20px]">image</span>
+</button>
+<button class="flex items-center text-text-dim hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[20px]">link</span>
+</button>
+</div>
+<button class="bg-primary hover:bg-primary/90 text-white text-xs font-semibold px-4 py-1.5 rounded-full transition-all">
+                            Post
+                        </button>
+</div>
+</div>
+</div>
+</section>
+<!-- Sort Bar -->
+<nav class="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
+<button class="flex h-8 items-center justify-center rounded-full bg-white/10 px-4 text-xs font-medium text-white">Hot</button>
+<button class="flex h-8 items-center justify-center rounded-full bg-transparent px-4 text-xs font-medium text-text-ghost hover:text-white">New</button>
+<button class="flex h-8 items-center justify-center rounded-full bg-transparent px-4 text-xs font-medium text-text-ghost hover:text-white">Top</button>
+<button class="flex h-8 items-center justify-center rounded-full bg-transparent px-4 text-xs font-medium text-text-ghost hover:text-white">Rising</button>
+</nav>
+<!-- Feed Posts -->
+<div class="space-y-4">
+<!-- Post Card 1 -->
+<article class="glass-morphism rounded-2xl flex p-1">
+<!-- Upvote Column -->
+<div class="flex flex-col items-center gap-1 w-10 pt-3">
+<button class="material-symbols-outlined text-text-dim hover:text-[#22c55e] transition-colors text-xl">arrow_upward</button>
+<span class="text-xs font-bold text-white">12.4k</span>
+<button class="material-symbols-outlined text-text-dim hover:text-[#f43f5e] transition-colors text-xl">arrow_downward</button>
+</div>
+<!-- Content Area -->
+<div class="flex-1 p-3 pl-1">
+<div class="flex items-center gap-2 text-[11px] mb-2">
+<div class="flex items-center gap-1.5">
+<span class="size-1.5 rounded-full bg-blue-500"></span>
+<span class="font-bold text-white">s/techworld</span>
+</div>
+<span class="text-text-ghost">•</span>
+<span class="text-text-dim">u/cyberpunk</span>
+<span class="text-text-ghost">• 2h</span>
+</div>
+<h3 class="text-[15px] font-semibold text-white leading-snug mb-2">The future of neural interfaces is closer than we think.</h3>
+<p class="text-sm text-text-dim line-clamp-2 leading-relaxed mb-3">
+                        Recent breakthroughs in nanotech are allowing for non-invasive high-bandwidth connections to the visual cortex. This changes everything for VR and AR...
+                    </p>
+<div class="w-full h-[160px] rounded-lg bg-cover bg-center mb-3" data-alt="Abstract futuristic digital interface visualization" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBff1X9TtaxC2tPNLCkhj-0nXuROPlg40HllomnTmoRCyknP6ygX5PRj2uMYF1NQ8T6tpvhtyzmV9vZKg1YYeFuNHGMSlecYEHsHE2FDJzneICkXQQ_cLE-xtUzeCsZy-bsB2_bIqbvzG3OdOZSmpwClZfFkzxrJ--s2NF9o6NllWGj1skqgptHj8XxFA5tEwiDqubwVg_k7PG4xAgNDMXpDpLwcMq9JXtm6hxtyet-_4sf9knCxvk96p4Q3RFjpy7tBmEkTQo-4Ll5')"></div>
+<div class="flex items-center gap-4">
+<button class="flex items-center gap-1.5 text-text-ghost hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[16px]">chat_bubble</span>
+<span class="text-[11px] font-medium">428 Comments</span>
+</button>
+<button class="flex items-center gap-1.5 text-text-ghost hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[16px]">share</span>
+<span class="text-[11px] font-medium">Share</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Post Card 2 -->
+<article class="glass-morphism rounded-2xl flex p-1">
+<div class="flex flex-col items-center gap-1 w-10 pt-3">
+<button class="material-symbols-outlined text-text-dim hover:text-[#22c55e] transition-colors text-xl">arrow_upward</button>
+<span class="text-xs font-bold text-white">852</span>
+<button class="material-symbols-outlined text-text-dim hover:text-[#f43f5e] transition-colors text-xl">arrow_downward</button>
+</div>
+<div class="flex-1 p-3 pl-1">
+<div class="flex items-center gap-2 text-[11px] mb-2">
+<div class="flex items-center gap-1.5">
+<span class="size-1.5 rounded-full bg-emerald-500"></span>
+<span class="font-bold text-white">s/photography</span>
+</div>
+<span class="text-text-ghost">•</span>
+<span class="text-text-dim">u/lens_flare</span>
+<span class="text-text-ghost">• 5h</span>
+</div>
+<h3 class="text-[15px] font-semibold text-white leading-snug mb-2">Morning fog over the valley. Shot on 35mm.</h3>
+<div class="w-full h-[160px] rounded-lg bg-cover bg-center mb-3" data-alt="Cinematic landscape photo of foggy valley at sunrise" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBtQBBONxjHzhnZcLApb4iqUc_EHtITxjs1ELIVYtEf93ANzVD3IfcAVKPGMqBoy3GWUeeWDAeeImRP2Jv6IGrYqKPupaTTjPSWWBYWZwkPMBR18j--2iap-msYqzoT_H0nJbIfmUoOhLJrBKvLm56NlMJnkj--RkOEar8gCsSPbT2rk0N1K4TLmKmfs06DdOUPu0vz-bFTYopZsIAm-O816m7Duk-6e4yzo6PMIb5jviakOcglVEQaXHm65Vh23DgMz22FNYTo-E-F')"></div>
+<div class="flex items-center gap-4">
+<button class="flex items-center gap-1.5 text-text-ghost hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[16px]">chat_bubble</span>
+<span class="text-[11px] font-medium">82 Comments</span>
+</button>
+<button class="flex items-center gap-1.5 text-text-ghost hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[16px]">share</span>
+<span class="text-[11px] font-medium">Share</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Post Card 3 (Text Only) -->
+<article class="glass-morphism rounded-2xl flex p-1">
+<div class="flex flex-col items-center gap-1 w-10 pt-3">
+<button class="material-symbols-outlined text-text-dim hover:text-[#22c55e] transition-colors text-xl">arrow_upward</button>
+<span class="text-xs font-bold text-white">3.1k</span>
+<button class="material-symbols-outlined text-text-dim hover:text-[#f43f5e] transition-colors text-xl">arrow_downward</button>
+</div>
+<div class="flex-1 p-3 pl-1">
+<div class="flex items-center gap-2 text-[11px] mb-2">
+<div class="flex items-center gap-1.5">
+<span class="size-1.5 rounded-full bg-orange-500"></span>
+<span class="font-bold text-white">s/philosophy</span>
+</div>
+<span class="text-text-ghost">•</span>
+<span class="text-text-dim">u/stoic_mind</span>
+<span class="text-text-ghost">• 8h</span>
+</div>
+<h3 class="text-[15px] font-semibold text-white leading-snug mb-2">Why we should stop chasing happiness and start seeking meaning.</h3>
+<p class="text-sm text-text-dim leading-relaxed mb-3">
+                        Happiness is a fleeting emotional state, while meaning provides a solid foundation for navigating life's inevitable challenges. Viktor Frankl argued that...
+                    </p>
+<div class="flex items-center gap-4">
+<button class="flex items-center gap-1.5 text-text-ghost hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[16px]">chat_bubble</span>
+<span class="text-[11px] font-medium">1.2k Comments</span>
+</button>
+<button class="flex items-center gap-1.5 text-text-ghost hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[16px]">share</span>
+<span class="text-[11px] font-medium">Share</span>
+</button>
+</div>
+</div>
+</article>
+</div>
+</main>
+<!-- Bottom Navigation -->
+<footer class="fixed bottom-0 z-50 w-full glass-morphism border-t border-glass-border">
+<div class="flex items-center justify-around h-16 px-4">
+<a class="flex flex-col items-center gap-1 text-white" href="#">
+<span class="material-symbols-outlined fill-1">home</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-text-ghost hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined">explore</span>
+</a>
+<a class="flex flex-col items-center justify-center size-10 bg-primary rounded-full text-white shadow-lg shadow-primary/20" href="#">
+<span class="material-symbols-outlined">add</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-text-ghost hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined">group</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-text-ghost hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined">person</span>
+</a>
+</div>
+<div class="h-5 w-full"></div> <!-- Safe area spacing -->
+</footer>
+</body></html>

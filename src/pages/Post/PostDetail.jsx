@@ -201,7 +201,6 @@ export default function PostDetail() {
           padding: 32px 20px 80px;
         }
 
-        /* Post card */
         .post-card {
           background: rgba(255,255,255,0.025);
           border: 1px solid rgba(255,255,255,0.07);
@@ -211,7 +210,6 @@ export default function PostDetail() {
           animation: fadeUp 0.6s cubic-bezier(0.16,1,0.3,1) 0.05s both;
         }
 
-        /* Comment box */
         .comment-box {
           background: rgba(255,255,255,0.02);
           border: 1px solid rgba(255,255,255,0.06);
@@ -221,7 +219,6 @@ export default function PostDetail() {
           animation: fadeUp 0.6s cubic-bezier(0.16,1,0.3,1) 0.15s both;
         }
 
-        /* Comments list */
         .comments-list {
           background: rgba(255,255,255,0.02);
           border: 1px solid rgba(255,255,255,0.06);
@@ -235,7 +232,6 @@ export default function PostDetail() {
           background: rgba(255,255,255,0.04);
         }
 
-        /* Inputs */
         .comment-input {
           flex: 1;
           background: rgba(255,255,255,0.04);
@@ -271,7 +267,6 @@ export default function PostDetail() {
         .reply-input::placeholder { color: rgba(255,255,255,0.14); }
         .reply-input:focus { border-color: rgba(255,255,255,0.35); background: rgba(255,255,255,0.05); }
 
-        /* Buttons */
         .comment-btn {
           background: #fff;
           color: #000;
@@ -314,7 +309,6 @@ export default function PostDetail() {
         .reply-btn:hover { background: rgba(255,255,255,0.13); color: #fff; }
         .reply-btn:disabled { opacity: 0.35; cursor: not-allowed; }
 
-        /* Action buttons (vote/comment count) */
         .action-btn {
           display: flex;
           align-items: center;
@@ -355,6 +349,37 @@ export default function PostDetail() {
           transition: color 0.15s;
         }
         .post-author:hover { color: #fff; }
+
+        .media-img {
+          width: 100%;
+          aspect-ratio: 1;
+          object-fit: cover;
+          display: block;
+          cursor: pointer;
+          transition: opacity 0.2s;
+        }
+        .media-img:hover { opacity: 0.85; }
+
+        .lightbox-overlay {
+          position: fixed; inset: 0; z-index: 9999;
+          background: rgba(0,0,0,0.92);
+          display: flex; align-items: center; justify-content: center;
+          animation: fadeUp 0.2s ease both;
+        }
+        .lightbox-img {
+          max-width: 90vw; max-height: 90vh;
+          border-radius: 10px;
+          object-fit: contain;
+          box-shadow: 0 24px 80px rgba(0,0,0,0.6);
+        }
+        .lightbox-close {
+          position: absolute; top: 20px; right: 24px;
+          background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
+          color: #fff; border-radius: 50%; width: 36px; height: 36px;
+          display: flex; align-items: center; justify-content: center;
+          cursor: pointer; font-size: 16px; transition: background 0.2s;
+        }
+        .lightbox-close:hover { background: rgba(255,255,255,0.16); }
       `}</style>
 
       <div className="pd-wrap">
@@ -392,6 +417,48 @@ export default function PostDetail() {
               <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '14px', lineHeight: 1.75, marginBottom: '20px', fontFamily: "'DM Sans', sans-serif" }}>
                 {post.content}
               </p>
+            )}
+
+            {/* ── MEDIA: Photos ── */}
+            {post.type === 'MEDIA' && post.mediaType === 'PHOTO' && post.mediaUrls?.length > 0 && (
+              <MediaPhotoGrid urls={post.mediaUrls} />
+            )}
+
+            {/* ── MEDIA: Video ── */}
+            {post.type === 'MEDIA' && post.mediaType === 'VIDEO' && post.imageUrl && (
+              <div style={{ marginBottom: '20px', borderRadius: '10px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.07)' }}>
+                <video
+                  src={post.imageUrl}
+                  controls
+                  style={{ width: '100%', maxHeight: '420px', display: 'block', background: '#000' }}
+                />
+              </div>
+            )}
+
+            {/* ── IMAGE post ── */}
+            {post.type === 'IMAGE' && post.imageUrl && (
+              <div style={{ marginBottom: '20px', borderRadius: '10px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.07)' }}>
+                <img src={post.imageUrl} alt="" style={{ width: '100%', display: 'block', maxHeight: '480px', objectFit: 'cover' }} />
+              </div>
+            )}
+
+            {/* ── LINK post ── */}
+            {post.type === 'LINK' && post.linkUrl && (
+              <a
+                href={post.linkUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 14px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '9px', marginBottom: '20px', textDecoration: 'none', transition: 'background 0.2s' }}
+                onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.07)'}
+                onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.04)'}
+              >
+                <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="rgba(255,255,255,0.4)">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                </svg>
+                <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.45)', fontFamily: "'DM Sans', sans-serif", overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {post.linkUrl}
+                </span>
+              </a>
             )}
 
             {/* Rule */}
@@ -461,6 +528,33 @@ export default function PostDetail() {
 
         </div>
       </div>
+    </>
+  )
+}
+
+// ── Media photo grid with lightbox ──
+function MediaPhotoGrid({ urls }) {
+  const [lightbox, setLightbox] = useState(null)
+  const cols = Math.min(urls.length, 3)
+  return (
+    <>
+      <div style={{ display: 'grid', gridTemplateColumns: `repeat(${cols}, 1fr)`, gap: '6px', marginBottom: '20px', borderRadius: '10px', overflow: 'hidden' }}>
+        {urls.map((url, i) => (
+          <img
+            key={i}
+            src={url}
+            alt=""
+            className="media-img"
+            onClick={() => setLightbox(url)}
+          />
+        ))}
+      </div>
+      {lightbox && (
+        <div className="lightbox-overlay" onClick={() => setLightbox(null)}>
+          <button className="lightbox-close" onClick={() => setLightbox(null)}>✕</button>
+          <img src={lightbox} alt="" className="lightbox-img" onClick={e => e.stopPropagation()} />
+        </div>
+      )}
     </>
   )
 }

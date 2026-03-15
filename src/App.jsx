@@ -19,6 +19,11 @@ import ForgotPassword from './pages/Auth/ForgotPassword'
 import Settings from './pages/Settings/Settings'
 import { SidebarProvider } from './context/SidebarContext'
 import About from './pages/About/About'
+import AdminAccess from './pages/Admin/AdminAccess'
+import AdminLogin from './pages/Admin/AdminLogin'
+import AdminDashboard from './pages/Admin/AdminDashboard'
+import Help from './pages/Help/Help'
+import PrivacyPolicy from './pages/Legal/Legal'
 
 const Spinner = () => (
   <>
@@ -47,32 +52,50 @@ const ProtectedRoute = () => {
   return token ? <Layout /> : <Navigate to="/login" replace />
 }
 
+const AdminRoute = () => {
+  const adminToken = localStorage.getItem('adminToken')
+  if (!adminToken) return <Navigate to="/admin/login" replace />
+  return <Outlet />
+}
+
 function App() {
   return (
-    <SidebarProvider><div style={{ background: '#080808', minHeight: '100vh' }}>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/verify-otp" element={<VerifyOtp />} />
-        <Route path="/oauth2/callback" element={<OAuth2Callback />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/about" element={<About />} />
+    <SidebarProvider>
+      <div style={{ background: '#080808', minHeight: '100vh' }}>
+        <Routes>
+          {/* Public routes — no login required */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/verify-otp" element={<VerifyOtp />} />
+          <Route path="/oauth2/callback" element={<OAuth2Callback />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/help" element={<Help />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
 
-        <Route element={<ProtectedRoute />}>
-          <Route path="/" element={<Home />} />
-          <Route path="/create-post" element={<CreatePost />} />
-          <Route path="/post/:postId" element={<PostDetail />} />
-          <Route path="/communities" element={<Communities />} />
-          <Route path="/profile/:username" element={<Profile />} />
-          <Route path="/community/:communityName" element={<CommunityDetail />} />
-          <Route path="/news" element={<News />} />
-          <Route path="/dm" element={<DM />} />
-          <Route path="/settings" element={<Settings />} />
-        </Route>
+          {/* Admin routes — completely isolated */}
+          <Route path="/admin/access" element={<AdminAccess />} />
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route element={<AdminRoute />}>
+            <Route path="/admin" element={<AdminDashboard />} />
+          </Route>
 
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </div>
+          {/* Protected user routes */}
+          <Route element={<ProtectedRoute />}>
+            <Route path="/" element={<Home />} />
+            <Route path="/create-post" element={<CreatePost />} />
+            <Route path="/post/:postId" element={<PostDetail />} />
+            <Route path="/communities" element={<Communities />} />
+            <Route path="/profile/:username" element={<Profile />} />
+            <Route path="/community/:communityName" element={<CommunityDetail />} />
+            <Route path="/news" element={<News />} />
+            <Route path="/dm" element={<DM />} />
+            <Route path="/settings" element={<Settings />} />
+          </Route>
+
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </div>
     </SidebarProvider>
   )
 }

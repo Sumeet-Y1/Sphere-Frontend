@@ -16,8 +16,14 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
+      const message = error.response?.data?.message
       localStorage.removeItem('token')
-      window.location.href = '/login'
+      localStorage.removeItem('user')
+      if (message === 'Account banned!') {
+        window.location.href = '/login?banned=true'
+      } else {
+        window.location.href = '/login'
+      }
     }
     return Promise.reject(error)
   }
