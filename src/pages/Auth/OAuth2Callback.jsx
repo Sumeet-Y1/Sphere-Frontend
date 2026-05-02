@@ -89,9 +89,9 @@ export default function OAuth2Callback() {
             fontWeight: 300,
             color: '#fff',
             letterSpacing: '0.16em',
-            lineHeight: 1,
+            lineHeight: 1, 
             marginBottom: '14px'
-          }}>
+          }}>     
             Sphere
           </h1>
           <div style={{

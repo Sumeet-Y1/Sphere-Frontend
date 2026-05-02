@@ -14,7 +14,7 @@ const SORT_OPTIONS = [
   { key: 'hot',    label: 'Hot',    icon: <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.6-7C14 5 15.929 5.777 17 7c1.487 1.306 2 3 2 4a8 8 0 01-2.343 7.657z"/></svg> },
   { key: 'new',    label: 'New',    icon: <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> },
   { key: 'top',    label: 'Top',    icon: <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg> },
-]
+]        
 
 export default function CommunityDetail() {
   const { communityName } = useParams()

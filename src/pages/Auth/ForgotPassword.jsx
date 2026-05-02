@@ -95,8 +95,8 @@ export default function ForgotPassword() {
         }
         .fp-otp::placeholder { color: rgba(255,255,255,0.1); font-size: 22px; letter-spacing: 0.3em; }
         .fp-otp:focus { border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.06); box-shadow: 0 0 0 3px rgba(255,255,255,0.05); }
-
-        .fp-btn {
+  
+        .fp-btn {   
           width: 100%; padding: 14px; border-radius: 11px; border: none;
           background: #fff; color: #000;
           font-family: 'DM Sans', sans-serif; font-size: 13.5px; font-weight: 600;
