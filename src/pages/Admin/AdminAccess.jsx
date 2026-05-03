@@ -16,7 +16,7 @@ export default function AdminAccess() {
       return
     }
     verifyKey(key)
-  }, [])
+  }, [])  
 
   const verifyKey = async (key) => {
     try {

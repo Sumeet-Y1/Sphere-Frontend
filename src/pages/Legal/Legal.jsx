@@ -16,7 +16,7 @@ const sections = [
       { heading: 'To ensure safety and security', body: 'We use your data to detect and prevent fraud, abuse, spam, and other harmful activity on the platform. This helps keep Sphere safe for everyone.' },
       { heading: 'To comply with legal obligations', body: 'We may process your data when required to do so by applicable law, regulation, or legal process.' },
     ]
-  },
+  }, 
   {
     id: 'cookies',
     title: 'Cookies',
