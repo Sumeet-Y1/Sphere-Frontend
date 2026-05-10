@@ -299,7 +299,7 @@ export default function PrivacyPolicy() {
               <Link to="/" className="pp-footer-link" style={{ color: textMuted }}>Home</Link>
               <Link to="/about" className="pp-footer-link" style={{ color: textMuted }}>About</Link>
               <Link to="/help" className="pp-footer-link" style={{ color: textMuted }}>Help</Link>
-              <a href="#" className="pp-footer-link" style={{ color: textMuted }}>Terms</a>
+              <Link to="/legal" className="pp-footer-link" style={{ color: textMuted }}>Terms</Link>
               <a href="mailto:privacy@sphere.com" className="pp-footer-link" style={{ color: textMuted }}>Contact</a>
             </div>
             <p style={{ fontSize: 11, color: textMuted }}>Sphere, Inc © {new Date().getFullYear()}. All rights reserved.</p>

@@ -18,6 +18,7 @@ export default function Settings() {
   const [currentPassword, setCurrentPassword] = useState('')
   const [newPassword, setNewPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
+  const [deleteConfirm, setDeleteConfirm] = useState('')
 
   const [theme, setTheme] = useState(localStorage.getItem('theme') || 'dark')
 
@@ -74,12 +75,20 @@ export default function Settings() {
   }
 
   const handleDeleteAccount = async () => {
-    if (!window.confirm('Are you sure? This action is PERMANENT and cannot be undone!')) return
-    if (!window.confirm('Really? All your posts, comments and data will be deleted forever!')) return
+    if (deleteConfirm.trim().toLowerCase() !== 'confirm') {
+      showError('Type confirm to delete your account.')
+      return
+    }
+    setLoading(true)
     try {
       await api.delete('/users/me')
+      localStorage.removeItem('token')
+      localStorage.removeItem('user')
       logout(); navigate('/login')
-    } catch (err) { showError('Failed to delete account') }
+    } catch (err) {
+      showError(err.response?.data?.message || 'Failed to delete account')
+      setLoading(false)
+    }
   }
 
   const handleUnblock = async (username) => {
@@ -249,6 +258,14 @@ export default function Settings() {
           cursor:pointer; transition:all 0.18s; font-family:'DM Sans',sans-serif;
         }
         .st-btn-danger:hover { background:rgba(239,68,68,0.14); color:#fca5a5; }
+        .st-btn-danger:disabled { opacity:0.38; cursor:not-allowed; background:rgba(239,68,68,0.05); color:rgba(252,165,165,0.45); }
+        .st-danger-confirm { margin:16px 0; }
+        .st-danger-note {
+          display:flex; gap:10px; align-items:flex-start;
+          border:1px solid rgba(239,68,68,0.12);
+          background:rgba(239,68,68,0.035);
+          border-radius:12px; padding:12px; margin-bottom:14px;
+        }
 
         /* Google account empty state */
         .st-empty { text-align:center; padding:40px 0; }
@@ -438,10 +455,31 @@ export default function Settings() {
                   <div className="st-danger-box">
                     <p style={{ fontSize:13,fontWeight:500,color:'rgba(252,165,165,0.8)',marginBottom:6 }}>Delete Account</p>
                     <p style={{ fontSize:12,color:'rgba(255,255,255,0.28)',marginBottom:16,lineHeight:1.6 }}>
-                      Permanently delete your account and all your data. This action cannot be undone.
+                      Permanently delete your account, posts, comments, votes, direct messages, follows, blocks, community memberships, and communities you own. This action cannot be undone.
                     </p>
-                    <button onClick={handleDeleteAccount} className="st-btn-danger">
-                      Delete My Account
+                    <div className="st-danger-note">
+                      <IcoTrash color="rgba(252,165,165,0.75)" size={16} />
+                      <p style={{ fontSize:12,color:'rgba(252,165,165,0.72)',lineHeight:1.55 }}>
+                        Type <span style={{ fontWeight:600,color:'rgba(255,255,255,0.86)' }}>confirm</span> below to unlock account deletion.
+                      </p>
+                    </div>
+                    <div className="st-danger-confirm">
+                      <label className="st-label">Confirmation</label>
+                      <input
+                        type="text"
+                        value={deleteConfirm}
+                        onChange={e => setDeleteConfirm(e.target.value)}
+                        className="st-input"
+                        placeholder="Type confirm"
+                        autoComplete="off"
+                      />
+                    </div>
+                    <button
+                      onClick={handleDeleteAccount}
+                      disabled={loading || deleteConfirm.trim().toLowerCase() !== 'confirm'}
+                      className="st-btn-danger"
+                    >
+                      {loading ? 'Deleting...' : 'Delete My Account'}
                     </button>
                   </div>
                 </div>

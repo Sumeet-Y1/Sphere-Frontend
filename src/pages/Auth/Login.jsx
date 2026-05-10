@@ -281,9 +281,9 @@ export default function Login() {
           <div className="login-footer" style={{ zIndex: 3 }}>
             <div className="login-footer-links">
               <Link to="/about" className="login-footer-link">About</Link>
-              <a href="#" className="login-footer-link">Help</a>
-              <a href="#" className="login-footer-link">Privacy</a>
-              <a href="#" className="login-footer-link">Terms</a>
+              <Link to="/help" className="login-footer-link">Help</Link>
+              <Link to="/privacy" className="login-footer-link">Privacy</Link>
+              <Link to="/legal" className="login-footer-link">Terms</Link>
             </div>
             <p className="login-footer-copy">Sphere, Inc © {new Date().getFullYear()}</p>
           </div>
@@ -321,9 +321,9 @@ export default function Login() {
             <div className="login-footer">
               <div className="login-footer-links">
                 <Link to="/about" className="login-footer-link">About</Link>
-                <a href="#" className="login-footer-link">Help</a>
-                <a href="#" className="login-footer-link">Privacy</a>
-                <a href="#" className="login-footer-link">Terms</a>
+                <Link to="/help" className="login-footer-link">Help</Link>
+                <Link to="/privacy" className="login-footer-link">Privacy</Link>
+                <Link to="/legal" className="login-footer-link">Terms</Link>
                 <a href="#" className="login-footer-link">Careers</a>
                 <a href="#" className="login-footer-link">Blog</a>
               </div>

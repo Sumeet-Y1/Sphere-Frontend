@@ -72,6 +72,7 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/help" element={<Help />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/legal" element={<PrivacyPolicy />} />
 
           {/* Admin routes — completely isolated */}
           <Route path="/admin/access" element={<AdminAccess />} />

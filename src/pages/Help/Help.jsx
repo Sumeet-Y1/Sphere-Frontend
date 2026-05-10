@@ -430,8 +430,8 @@ export default function Help() {
           <div className="help-footer">
             <div className="help-footer-links">
               <Link to="/about" className="help-footer-link">About</Link>
-              <a href="#" className="help-footer-link">Privacy</a>
-              <a href="#" className="help-footer-link">Terms</a>
+              <Link to="/privacy" className="help-footer-link">Privacy</Link>
+              <Link to="/legal" className="help-footer-link">Terms</Link>
               <a href="#" className="help-footer-link">Careers</a>
               <a href="#" className="help-footer-link">Blog</a>
             </div>

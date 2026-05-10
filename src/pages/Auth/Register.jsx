@@ -213,6 +213,38 @@ export default function Register() {
           display: flex;
         }
         .eye-btn:hover { color: rgba(255,255,255,0.75); }
+
+        .login-footer {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          padding: 14px 24px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 6px;
+          border-top: 1px solid rgba(255,255,255,0.04);
+        }
+        .login-footer-links {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+          gap: 4px 14px;
+        }
+        .login-footer-link {
+          color: rgba(255,255,255,0.22);
+          font-size: 11px;
+          text-decoration: none;
+          font-family: 'DM Sans', sans-serif;
+          transition: color 0.2s;
+        }
+        .login-footer-link:hover { color: rgba(255,255,255,0.6); }
+        .login-footer-copy {
+          color: rgba(255,255,255,0.1);
+          font-size: 10px;
+          font-family: 'DM Sans', sans-serif;
+        }
       `}</style>
 
       <div style={{ display: 'flex', height: '100vh', width: '100vw', background: '#080808', overflow: 'hidden', fontFamily: "'DM Sans', sans-serif" }}>
@@ -246,7 +278,7 @@ export default function Register() {
         </div>
 
         {/* ── RIGHT: form panel ── */}
-        <div style={{ flex: 1, position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 44px', background: '#080808', overflow: 'hidden' }}>
+        <div style={{ flex: 1, position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 44px 60px', background: '#080808', overflow: 'hidden' }}>
 
           <div style={{ position: 'absolute', width: '380px', height: '380px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(255,255,255,0.025) 0%, transparent 70%)', top: '50%', left: '50%', transform: 'translate(-50%, -55%)', pointerEvents: 'none' }} />
           {[260, 180, 110].map((size, i) => (
@@ -343,6 +375,18 @@ export default function Register() {
               <Link to="/login" className="login-link">Sign in →</Link>
             </p>
 
+          </div>
+
+          <div className="login-footer">
+            <div className="login-footer-links">
+              <Link to="/about" className="login-footer-link">About</Link>
+              <Link to="/help" className="login-footer-link">Help</Link>
+              <Link to="/privacy" className="login-footer-link">Privacy</Link>
+              <Link to="/legal" className="login-footer-link">Terms</Link>
+              <a href="#" className="login-footer-link">Careers</a>
+              <a href="#" className="login-footer-link">Blog</a>
+            </div>
+            <p className="login-footer-copy">Sphere, Inc © {new Date().getFullYear()}. All rights reserved.</p>
           </div>
         </div>
       </div>
