@@ -7,7 +7,7 @@ export default function OAuth2Callback() {
   const [searchParams] = useSearchParams()
   const { login } = useAuth()
   const navigate = useNavigate()
-
+   
   useEffect(() => {
     const token = searchParams.get('token')
     if (token) {

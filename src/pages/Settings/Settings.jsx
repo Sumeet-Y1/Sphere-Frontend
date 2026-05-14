@@ -4,7 +4,7 @@ import api from '../../api/axios'
 import { useAuth } from '../../context/AuthContext'
 
 export default function Settings() {
-  const { user, logout } = useAuth()
+  const { user, logout, updateUser } = useAuth()
   const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState('profile')
   const [blockedUsers, setBlockedUsers] = useState([])
@@ -14,6 +14,8 @@ export default function Settings() {
 
   const [username, setUsername] = useState(user?.username || '')
   const [bio, setBio] = useState(user?.bio || '')
+  const [privateAccount, setPrivateAccount] = useState(Boolean(user?.privateAccount))
+  const [pendingRequests, setPendingRequests] = useState([])
 
   const [currentPassword, setCurrentPassword] = useState('')
   const [newPassword, setNewPassword] = useState('')
@@ -31,12 +33,26 @@ export default function Settings() {
 
   useEffect(() => {
     if (activeTab === 'blocked') fetchBlockedUsers()
+    if (activeTab === 'privacy') fetchPendingRequests()
   }, [activeTab])
+
+  useEffect(() => {
+    setUsername(user?.username || '')
+    setBio(user?.bio || '')
+    setPrivateAccount(Boolean(user?.privateAccount))
+  }, [user])
 
   const fetchBlockedUsers = async () => {
     try {
       const res = await api.get('/users/me/blocked')
       setBlockedUsers(res.data)
+    } catch (err) { console.error(err) }
+  }
+
+  const fetchPendingRequests = async () => {
+    try {
+      const res = await api.get('/users/me/follow-requests')
+      setPendingRequests(res.data)
     } catch (err) { console.error(err) }
   }
 
@@ -53,8 +69,20 @@ export default function Settings() {
   const handleUpdateProfile = async (e) => {
     e.preventDefault(); setLoading(true)
     try {
-      await api.put('/users/me', { username, bio })
+      const previousUsername = user?.username
+      const res = await api.put('/users/me', { username, bio })
+      setUsername(res.data.username || '')
+      setBio(res.data.bio || '')
+      updateUser({
+        username: res.data.username,
+        bio: res.data.bio,
+        avatarUrl: res.data.avatarUrl,
+        privateAccount: res.data.privateAccount,
+      })
       showSuccess('Profile updated successfully!')
+      if (previousUsername && previousUsername !== res.data.username) {
+        navigate(`/profile/${res.data.username}`)
+      }
     } catch (err) {
       showError(err.response?.data?.message || 'Failed to update profile')
     } finally { setLoading(false) }
@@ -105,8 +133,42 @@ export default function Settings() {
     showSuccess('Theme preference saved!')
   }
 
+  const handlePrivacyToggle = async () => {
+    setLoading(true)
+    try {
+      const res = await api.put('/users/me', { privateAccount: !privateAccount })
+      setPrivateAccount(res.data.privateAccount)
+      updateUser({
+        username: res.data.username,
+        bio: res.data.bio,
+        avatarUrl: res.data.avatarUrl,
+        privateAccount: res.data.privateAccount,
+      })
+      if (res.data.privateAccount) {
+        fetchPendingRequests()
+        showSuccess('Account is now private')
+      } else {
+        setPendingRequests([])
+        showSuccess('Account is now public')
+      }
+    } catch (err) {
+      showError(err.response?.data?.message || 'Failed to update privacy')
+    } finally { setLoading(false) }
+  }
+
+  const handleFollowRequest = async (requestId, action) => {
+    try {
+      await api.post(`/users/me/follow-requests/${requestId}/${action}`)
+      setPendingRequests(prev => prev.filter(req => req.id !== requestId))
+      showSuccess(action === 'accept' ? 'Follow request accepted' : 'Follow request rejected')
+    } catch (err) {
+      showError(err.response?.data?.message || 'Failed to update follow request')
+    }
+  }
+
   const tabs = [
     { id: 'profile',       label: 'Profile',       icon: <IcoUser /> },
+    { id: 'privacy',       label: 'Privacy',       icon: <IcoShield /> },
     { id: 'password',      label: 'Password',      icon: <IcoLock /> },
     { id: 'notifications', label: 'Notifications', icon: <IcoBell /> },
     { id: 'theme',         label: 'Theme',         icon: <IcoPalette /> },
@@ -316,6 +378,9 @@ export default function Settings() {
                   <div className="st-field">
                     <label className="st-label">Username</label>
                     <input type="text" value={username} onChange={e => setUsername(e.target.value)} className="st-input" />
+                    <p style={{ marginTop: 8, fontSize: 11, color: 'rgba(255,255,255,0.22)', lineHeight: 1.5 }}>
+                      Your public profile link updates when you save a new username.
+                    </p>
                   </div>
                   <div className="st-field">
                     <label className="st-label">Bio</label>
@@ -325,6 +390,57 @@ export default function Settings() {
                     {loading ? 'Saving...' : 'Save Changes'}
                   </button>
                 </form>
+              )}
+
+              {activeTab === 'privacy' && (
+                <div>
+                  <p className="st-card-title">Privacy & Requests</p>
+                  <div className="st-toggle-row" style={{ paddingTop: 0 }}>
+                    <div>
+                      <p style={{ fontSize:13,fontWeight:500,color:'rgba(255,255,255,0.72)',marginBottom:3 }}>Private Account</p>
+                      <p style={{ fontSize:11.5,color:'rgba(255,255,255,0.25)',lineHeight:1.6 }}>
+                        Only approved followers can view your full profile and posts when this is enabled.
+                      </p>
+                    </div>
+                    <button
+                      onClick={handlePrivacyToggle}
+                      className="st-toggle"
+                      style={{ background: privateAccount ? '#fff' : 'rgba(255,255,255,0.08)' }}
+                    >
+                      <div className="st-toggle-thumb" style={{ left: privateAccount ? '20px' : '2px', background: privateAccount ? '#000' : 'rgba(255,255,255,0.3)' }} />
+                    </button>
+                  </div>
+
+                  <div style={{ marginTop: 24 }}>
+                    <p style={{ fontSize:13,fontWeight:500,color:'rgba(255,255,255,0.72)',marginBottom:10 }}>Pending Follow Requests</p>
+                    {!privateAccount ? (
+                      <div className="st-empty">
+                        <p style={{ fontSize:12,color:'rgba(255,255,255,0.25)' }}>Turn on private account to review follow requests here.</p>
+                      </div>
+                    ) : pendingRequests.length === 0 ? (
+                      <div className="st-empty">
+                        <p style={{ fontSize:12,color:'rgba(255,255,255,0.25)' }}>No pending requests right now.</p>
+                      </div>
+                    ) : (
+                      pendingRequests.map(req => (
+                        <div key={req.id} className="st-user-row">
+                          <div style={{ display:'flex',alignItems:'center',gap:12 }}>
+                            <img src={req.requesterAvatarUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${req.requesterUsername}`}
+                              style={{ width:36,height:36,borderRadius:'50%',border:'1px solid rgba(255,255,255,0.08)' }} />
+                            <div>
+                              <p style={{ fontSize:13,fontWeight:500,color:'rgba(255,255,255,0.75)',marginBottom:2 }}>{req.requesterUsername}</p>
+                              <p style={{ fontSize:11,color:'rgba(255,255,255,0.25)' }}>{req.requesterBio || 'Wants to follow you'}</p>
+                            </div>
+                          </div>
+                          <div style={{ display:'flex',gap:8 }}>
+                            <button onClick={() => handleFollowRequest(req.id, 'accept')} className="st-btn-primary" style={{ padding:'7px 12px' }}>Accept</button>
+                            <button onClick={() => handleFollowRequest(req.id, 'reject')} className="st-btn-ghost">Decline</button>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
               )}
 
               {/* Password */}
@@ -495,6 +611,7 @@ export default function Settings() {
 
 // ── Icons ───────────────────────────────────────────
 const IcoUser    = ({ color='currentColor', size=14 }) => <svg width={size} height={size} fill="none" viewBox="0 0 24 24" stroke={color}><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+const IcoShield  = ({ color='currentColor', size=14 }) => <svg width={size} height={size} fill="none" viewBox="0 0 24 24" stroke={color}><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M12 3l7 4v5c0 5-3.5 8-7 9-3.5-1-7-4-7-9V7l7-4z"/></svg>
 const IcoLock    = ({ color='currentColor', size=14 }) => <svg width={size} height={size} fill="none" viewBox="0 0 24 24" stroke={color}><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
 const IcoBell    = ({ color='currentColor', size=14 }) => <svg width={size} height={size} fill="none" viewBox="0 0 24 24" stroke={color}><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
 const IcoPalette = ({ color='currentColor', size=14 }) => <svg width={size} height={size} fill="none" viewBox="0 0 24 24" stroke={color}><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/></svg>

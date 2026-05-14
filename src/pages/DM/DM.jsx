@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { Link } from 'react-router-dom'
 import api from '../../api/axios'
 import { useAuth } from '../../context/AuthContext'
 import { Client } from '@stomp/stompjs'
@@ -14,6 +15,7 @@ export default function DM() {
   const [loading, setLoading] = useState(true)
   const [newDmUsername, setNewDmUsername] = useState('')
   const [showNewDm, setShowNewDm] = useState(false)
+  const [dmError, setDmError] = useState('')
   const messagesEndRef = useRef(null)
   const stompClientRef = useRef(null)
   const selectedConvRef = useRef(null)
@@ -80,6 +82,7 @@ export default function DM() {
     e.preventDefault()
     if (!newMessage.trim()) return
     setSending(true)
+    setDmError('')
     try {
       await api.post('/dm/send', {
         receiverUsername: selectedConv.otherUsername,
@@ -89,6 +92,7 @@ export default function DM() {
       fetchMessages(selectedConv.id)
       fetchConversations()
     } catch (err) {
+      setDmError(err.response?.data?.message || 'Failed to send message')
       console.error(err)
     } finally {
       setSending(false)
@@ -98,12 +102,14 @@ export default function DM() {
   const handleNewDm = async (e) => {
     e.preventDefault()
     if (!newDmUsername.trim()) return
+    setDmError('')
     try {
       await api.post('/dm/send', { receiverUsername: newDmUsername, content: '👋 Hey!' })
       setShowNewDm(false)
       setNewDmUsername('')
       fetchConversations()
     } catch (err) {
+      setDmError(err.response?.data?.message || 'Failed to start conversation')
       console.error(err)
     }
   }
@@ -203,6 +209,11 @@ export default function DM() {
                   Start
                 </button>
               </form>
+              {dmError && (
+                <p style={{ marginTop: 8, fontSize: 11, color: 'rgba(252,165,165,0.9)' }}>
+                  {dmError}
+                </p>
+              )}
             </div>
           )}
 
@@ -228,7 +239,11 @@ export default function DM() {
                   onClick={() => setSelectedConv(conv)}
                   className={`dm-conv-row w-full flex items-center gap-3 px-4 py-3 text-left${selectedConv?.id === conv.id ? ' active' : ''}`}
                 >
-                  <div className="relative flex-shrink-0">
+                  <Link
+                    to={`/profile/${conv.otherUsername}`}
+                    onClick={(e) => e.stopPropagation()}
+                    style={{ position: 'relative', flexShrink: 0 }}
+                  >
                     <img
                       src={conv.otherAvatarUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${conv.otherUsername}`}
                       className="rounded-full"
@@ -240,12 +255,16 @@ export default function DM() {
                         {conv.unreadCount}
                       </span>
                     )}
-                  </div>
+                  </Link>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between mb-0.5">
-                      <p style={{ fontSize: 13, fontWeight: 500, color: selectedConv?.id === conv.id ? '#fff' : 'rgba(255,255,255,0.72)' }}>
+                      <Link
+                        to={`/profile/${conv.otherUsername}`}
+                        onClick={(e) => e.stopPropagation()}
+                        style={{ fontSize: 13, fontWeight: 500, color: selectedConv?.id === conv.id ? '#fff' : 'rgba(255,255,255,0.72)', textDecoration: 'none' }}
+                      >
                         {conv.otherUsername}
-                      </p>
+                      </Link>
                       {conv.lastMessageAt && (
                         <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.2)' }}>{timeAgo(conv.lastMessageAt)}</p>
                       )}
@@ -305,9 +324,12 @@ export default function DM() {
                     style={{ width: 9, height: 9, background: '#22c55e', border: '2px solid #080808' }} />
                 </div>
                 <div>
-                  <p style={{ fontSize: 13, fontWeight: 600, color: 'rgba(255,255,255,0.85)' }}>
+                  <Link
+                    to={`/profile/${selectedConv.otherUsername}`}
+                    style={{ fontSize: 13, fontWeight: 600, color: 'rgba(255,255,255,0.85)', textDecoration: 'none' }}
+                  >
                     {selectedConv.otherUsername}
-                  </p>
+                  </Link>
                   <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.2)', marginTop: 1 }}>Active now</p>
                 </div>
               </div>
@@ -348,6 +370,11 @@ export default function DM() {
 
               {/* Input */}
               <div className="px-4 py-3 border-t border-white/[0.06] flex-shrink-0">
+                {dmError && (
+                  <p style={{ marginBottom: 8, fontSize: 11, color: 'rgba(252,165,165,0.9)' }}>
+                    {dmError}
+                  </p>
+                )}
                 <form onSubmit={handleSend} className="flex items-center gap-2">
                   <input
                     type="text"

@@ -5,7 +5,7 @@ import { useAuth } from '../../context/AuthContext'
 
 export default function Profile() {
   const { username } = useParams()
-  const { user, login, token } = useAuth()
+  const { user, updateUser } = useAuth()
   const [profile, setProfile] = useState(null)
   const [posts, setPosts] = useState([])
   const [loading, setLoading] = useState(true)
@@ -13,6 +13,7 @@ export default function Profile() {
   const [form, setForm] = useState({ bio: '', avatarUrl: '' })
   const [saving, setSaving] = useState(false)
   const [uploadingAvatar, setUploadingAvatar] = useState(false)
+  const [error, setError] = useState('')
   const fileInputRef = useRef()
 
   const isOwnProfile = user?.username === username
@@ -27,7 +28,10 @@ export default function Profile() {
       const res = await api.get(`/users/${username}`)
       setProfile(res.data)
       setForm({ bio: res.data.bio || '', avatarUrl: res.data.avatarUrl || '' })
+      setError('')
     } catch (err) {
+      setProfile(null)
+      setError(err.response?.data?.message || 'Failed to load profile')
       console.error(err)
     } finally {
       setLoading(false)
@@ -36,9 +40,10 @@ export default function Profile() {
 
   const fetchPosts = async () => {
     try {
-      const res = await api.get('/posts/me')
+      const res = await api.get(`/posts/user/${username}`)
       setPosts(res.data)
     } catch (err) {
+      setPosts([])
       console.error(err)
     }
   }
@@ -49,7 +54,12 @@ export default function Profile() {
       const res = await api.put('/users/me', form)
       setProfile(res.data)
       setEditing(false)
-      login(token, { ...user, username: res.data.username })
+      updateUser({
+        username: res.data.username,
+        bio: res.data.bio,
+        avatarUrl: res.data.avatarUrl,
+        privateAccount: res.data.privateAccount,
+      })
     } catch (err) {
       console.error(err)
     } finally {
@@ -77,12 +87,13 @@ export default function Profile() {
 
   const handleFollow = async () => {
     try {
-      if (profile.following) {
+      if (profile.following || profile.requestedFollow) {
         await api.delete(`/users/${username}/unfollow`)
       } else {
         await api.post(`/users/${username}/follow`)
       }
       fetchProfile()
+      fetchPosts()
     } catch (err) {
       console.error(err)
     }
@@ -105,7 +116,7 @@ export default function Profile() {
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300&family=DM+Sans:wght@400&display=swap');`}</style>
       <div style={{ minHeight: '100vh', background: '#080808', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 14 }}>
         <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 42, fontWeight: 300, color: 'rgba(255,255,255,0.1)', letterSpacing: '0.16em' }}>Sphere</p>
-        <p style={{ color: 'rgba(255,255,255,0.25)', fontSize: 14, fontFamily: "'DM Sans', sans-serif" }}>User not found</p>
+        <p style={{ color: 'rgba(255,255,255,0.25)', fontSize: 14, fontFamily: "'DM Sans', sans-serif" }}>{error || 'User not found'}</p>
       </div>
     </>
   )
@@ -437,12 +448,19 @@ export default function Profile() {
                     <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 28, fontWeight: 300, color: '#fff', letterSpacing: '0.06em', lineHeight: 1, marginBottom: 5 }}>
                       {profile.username}
                     </h1>
+                    {profile.privateAccount && (
+                      <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.28)', fontFamily: "'DM Sans', sans-serif", marginBottom: 8 }}>
+                        Private account
+                      </p>
+                    )}
                     {isOwnProfile && (
   <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.25)', fontFamily: "'DM Sans', sans-serif", marginBottom: 8 }}>{profile.email}</p>
 )}
                     {!editing && (
                       <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.38)', fontFamily: "'DM Sans', sans-serif", lineHeight: 1.65, maxWidth: 380 }}>
-                        {profile.bio || (isOwnProfile ? 'No bio yet — click Edit Profile to add one.' : 'No bio.')}
+                        {profile.canViewProfile
+                          ? (profile.bio || (isOwnProfile ? 'No bio yet — click Edit Profile to add one.' : 'No bio.'))
+                          : 'This profile is private. Follow to see their bio and posts.'}
                       </p>
                     )}
                   </div>
@@ -457,7 +475,9 @@ export default function Profile() {
                   ) : (
                     profile.following
                       ? <button className="btn-unfollow" onClick={handleFollow}>Unfollow</button>
-                      : <button className="btn-primary" onClick={handleFollow}>Follow</button>
+                      : profile.requestedFollow
+                        ? <button className="btn-ghost" onClick={handleFollow}>Requested</button>
+                        : <button className="btn-primary" onClick={handleFollow}>{profile.privateAccount ? 'Request Follow' : 'Follow'}</button>
                   )}
                 </div>
               </div>
@@ -491,18 +511,18 @@ export default function Profile() {
             </div>
 
             {/* Posts section */}
-            {isOwnProfile && (
+            {profile.canViewProfile && (
               <div style={{ animation: 'fadeUp 0.6s cubic-bezier(0.16,1,0.3,1) 0.12s both' }}>
                 <p style={{ fontSize: 10, fontWeight: 500, letterSpacing: '0.16em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.22)', marginBottom: 12, fontFamily: "'DM Sans', sans-serif" }}>
-                  Your Posts
+                  {isOwnProfile ? 'Your Posts' : `${profile.username}'s Posts`}
                 </p>
 
                 {posts.length === 0 ? (
                   <div style={{ textAlign: 'center', padding: '48px 0', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 14 }}>
                     <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 36, fontWeight: 300, color: 'rgba(255,255,255,0.07)', letterSpacing: '0.16em', marginBottom: 12 }}>Sphere</p>
                     <p style={{ color: 'rgba(255,255,255,0.28)', fontSize: 14, fontWeight: 500, fontFamily: "'DM Sans', sans-serif", marginBottom: 5 }}>No posts yet</p>
-                    <p style={{ color: 'rgba(255,255,255,0.15)', fontSize: 13, fontFamily: "'DM Sans', sans-serif" }}>Share something with your community.</p>
-                    <Link to="/create-post" style={{
+                    <p style={{ color: 'rgba(255,255,255,0.15)', fontSize: 13, fontFamily: "'DM Sans', sans-serif" }}>{isOwnProfile ? 'Share something with your community.' : 'Nothing has been posted here yet.'}</p>
+                    {isOwnProfile && <Link to="/create-post" style={{
                       display: 'inline-block', marginTop: 18,
                       background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.1)',
                       color: 'rgba(255,255,255,0.5)', padding: '9px 22px',
@@ -513,7 +533,7 @@ export default function Profile() {
                       onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.07)'; e.currentTarget.style.color = 'rgba(255,255,255,0.5)'; }}
                     >
                       Create a post
-                    </Link>
+                    </Link>}
                   </div>
                 ) : (
                   posts.map((post, i) => (
@@ -546,6 +566,13 @@ export default function Profile() {
                 )}
               </div>
             )}
+            {!profile.canViewProfile && (
+              <div style={{ animation: 'fadeUp 0.6s cubic-bezier(0.16,1,0.3,1) 0.12s both', textAlign: 'center', padding: '48px 0', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 14 }}>
+                <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 34, fontWeight: 300, color: 'rgba(255,255,255,0.12)', letterSpacing: '0.14em', marginBottom: 12 }}>Private</p>
+                <p style={{ color: 'rgba(255,255,255,0.3)', fontSize: 14, fontWeight: 500, fontFamily: "'DM Sans', sans-serif", marginBottom: 6 }}>This account only shares with approved followers.</p>
+                <p style={{ color: 'rgba(255,255,255,0.18)', fontSize: 12, fontFamily: "'DM Sans', sans-serif" }}>Send a follow request to see their posts and profile details.</p>
+              </div>
+            )}
           </div>
 
           {/* ════════════ RIGHT SIDEBAR ════════════ */}
@@ -573,7 +600,9 @@ export default function Profile() {
             <div className="widget" style={{ animationDelay: '0.14s' }}>
               <div className="widget-title">About</div>
               <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.35)', lineHeight: 1.7, fontFamily: "'DM Sans', sans-serif", marginBottom: profile.createdAt ? 12 : 0 }}>
-                {profile.bio || 'This user hasn\'t written a bio yet.'}
+                {profile.canViewProfile
+                  ? (profile.bio || 'This user hasn\'t written a bio yet.')
+                  : 'Private account. Follow to view profile details.'}
               </p>
               {profile.createdAt && (
                 <>
