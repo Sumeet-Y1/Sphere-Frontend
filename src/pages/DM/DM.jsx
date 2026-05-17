@@ -4,6 +4,7 @@ import api from '../../api/axios'
 import { useAuth } from '../../context/AuthContext'
 import { Client } from '@stomp/stompjs'
 import SockJS from 'sockjs-client'
+import { WEBSOCKET_URL } from '../../config/endpoints'
 
 export default function DM() {
   const { user } = useAuth()
@@ -29,7 +30,7 @@ export default function DM() {
 
     const token = localStorage.getItem('token')
     const client = new Client({
-      webSocketFactory: () => new SockJS('http://localhost:8080/ws'),
+      webSocketFactory: () => new SockJS(WEBSOCKET_URL),
       connectHeaders: { Authorization: `Bearer ${token}` },
       onConnect: () => {
         client.subscribe('/user/queue/messages', (message) => {

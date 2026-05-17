@@ -16,7 +16,7 @@ export default function OAuth2Callback() {
       navigate('/login')
     }
   }, [])
-
+     
   const handleCallback = async (token) => {
     try {
       const res = await api.get('/users/me', {

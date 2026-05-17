@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext'
 import { useSidebar } from '../context/SidebarContext'
 import { Client } from '@stomp/stompjs'
 import SockJS from 'sockjs-client'
+import { WEBSOCKET_URL } from '../config/endpoints'
 
 export default function Navbar() {
   const { user, logout } = useAuth()
@@ -21,7 +22,7 @@ export default function Navbar() {
     const token = localStorage.getItem('token')
     if (!token) return
     const client = new Client({
-      webSocketFactory: () => new SockJS('http://localhost:8080/ws'),
+      webSocketFactory: () => new SockJS(WEBSOCKET_URL),
       connectHeaders: { Authorization: `Bearer ${token}` },
       onConnect: () => {
         client.subscribe('/user/queue/notifications', (message) => {

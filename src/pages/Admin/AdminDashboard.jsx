@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
+import { API_BASE_URL } from '../../config/endpoints'
 
-const adminApi = axios.create({ baseURL: 'http://localhost:8080/api' })
+const adminApi = axios.create({ baseURL: API_BASE_URL })
 adminApi.interceptors.request.use(config => {
   const token = localStorage.getItem('adminToken')
   if (token) config.headers.Authorization = `Bearer ${token}`
