@@ -1,5 +1,5 @@
 const LOCAL_ORIGIN = 'http://localhost:8080'
-const PROD_ORIGIN = 'https://sphere-t364.onrender.com'
+const PROD_ORIGIN = 'https://sphere-1-8pzz.onrender.com'
 
 const isLocalFrontend = typeof window !== 'undefined' && (
   window.location.hostname === 'localhost' ||
