@@ -290,7 +290,7 @@ export default function VerifyOtp() {
                 alignItems: 'center',
                 fontFamily: "'DM Sans', sans-serif"
               }}>
-                ⚠️ {error}
+                 {error}
               </div>
             )}
 

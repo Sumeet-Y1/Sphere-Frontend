@@ -110,7 +110,7 @@ export default function Login() {
               </p>
             </>
           ) : (
-            <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>⚠️ {error}</span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}> {error}</span>
           )}
         </div>
       )}

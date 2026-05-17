@@ -304,7 +304,7 @@ export default function Register() {
             {/* Error */}
             {error && (
               <div style={{ background: 'rgba(255,60,60,0.08)', border: '1px solid rgba(255,80,80,0.25)', color: 'rgba(255,200,200,0.9)', padding: '11px 15px', borderRadius: '10px', marginBottom: '16px', fontSize: '13px', display: 'flex', gap: '8px', alignItems: 'center', fontFamily: "'DM Sans', sans-serif" }}>
-                ⚠️ {error}
+                 {error}
               </div>
             )}
 

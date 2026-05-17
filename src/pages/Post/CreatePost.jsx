@@ -261,7 +261,7 @@ export default function CreatePost() {
             <p className="cp-subtitle">Share something with your community</p>
           </div>
 
-          {error && <div className="cp-error">⚠️ {error}</div>}
+          {error && <div className="cp-error"> {error}</div>}
 
           <div className="cp-card">
 
