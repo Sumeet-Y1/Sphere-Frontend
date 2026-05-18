@@ -1,1 +1,54 @@
 @import "tailwindcss";
+
+:root,
+html[data-theme="dark"],
+body[data-theme="dark"] {
+  --theme-bg: #080808;
+  --theme-shell-bg: #080808;
+  --theme-surface: #0d0d0d;
+  --theme-surface-muted: #121212;
+  --theme-text: #ffffff;
+  --theme-tone: 1;
+}
+
+html[data-theme="dim"],
+body[data-theme="dim"] {
+  --theme-bg: #161616;
+  --theme-shell-bg: #181818;
+  --theme-surface: #202020;
+  --theme-surface-muted: #262626;
+  --theme-text: #ffffff;
+  --theme-tone: 0.94;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--theme-bg);
+  color: var(--theme-text);
+  transition: background-color 180ms ease, color 180ms ease;
+}
+
+#root {
+  background: var(--theme-bg);
+  transition: background-color 180ms ease;
+}
+
+.app-theme-shell {
+  background: var(--theme-shell-bg);
+  transition: background-color 180ms ease, filter 180ms ease;
+}
+
+body[data-theme="dim"] .app-theme-shell {
+  filter: brightness(1.05) saturate(0.92);
+}
+
+.app-theme-surface {
+  background: var(--theme-surface) !important;
+  transition: background-color 180ms ease;
+}

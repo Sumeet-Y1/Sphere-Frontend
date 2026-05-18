@@ -61,7 +61,8 @@ export default function Login() {
       login(res.data.token, {
         username: res.data.username, email: res.data.email,
         role: res.data.role, avatarUrl: res.data.avatarUrl,
-        authProvider: res.data.authProvider
+        authProvider: res.data.authProvider,
+        theme: res.data.theme
       })
       navigate('/')
     } catch (err) {

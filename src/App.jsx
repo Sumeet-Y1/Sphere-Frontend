@@ -24,11 +24,12 @@ import AdminLogin from './pages/Admin/AdminLogin'
 import AdminDashboard from './pages/Admin/AdminDashboard'
 import Help from './pages/Help/Help'
 import PrivacyPolicy from './pages/Legal/Legal'
+import { useTheme } from './context/ThemeContext'
 
 const Spinner = () => (
   <>
     <style>{`@keyframes spin { to { transform: rotate(360deg); } } .spin { animation: spin 1s linear infinite; }`}</style>
-    <div style={{ minHeight: '100vh', background: '#080808', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <div className="app-theme-shell" style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <svg className="spin" style={{ width: 28, height: 28 }} viewBox="0 0 24 24" fill="none">
         <circle cx="12" cy="12" r="10" stroke="white" strokeWidth="3" style={{ opacity: 0.2 }} />
         <path fill="white" d="M4 12a8 8 0 018-8v8z" style={{ opacity: 0.6 }} />
@@ -59,9 +60,11 @@ const AdminRoute = () => {
 }
 
 function App() {
+  const { theme } = useTheme()
+
   return (
     <SidebarProvider>
-      <div style={{ background: '#080808', minHeight: '100vh' }}>
+      <div className="app-theme-shell" data-theme={theme} style={{ minHeight: '100vh' }}>
         <Routes>
           {/* Public routes — no login required */}
           <Route path="/login" element={<Login />} />

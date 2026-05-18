@@ -2,9 +2,11 @@ import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import api from '../../api/axios'
 import { useAuth } from '../../context/AuthContext'
+import { useTheme } from '../../context/ThemeContext'
 
 export default function Settings() {
   const { user, logout, updateUser } = useAuth()
+  const { theme, setThemePreference } = useTheme()
   const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState('profile')
   const [blockedUsers, setBlockedUsers] = useState([])
@@ -21,8 +23,6 @@ export default function Settings() {
   const [newPassword, setNewPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [deleteConfirm, setDeleteConfirm] = useState('')
-
-  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'dark')
 
   const [notifSettings, setNotifSettings] = useState({
     dmNotifs: true,
@@ -127,10 +127,19 @@ export default function Settings() {
     } catch (err) { showError('Failed to unblock user') }
   }
 
-  const handleThemeChange = (t) => {
-    setTheme(t)
-    localStorage.setItem('theme', t)
-    showSuccess('Theme preference saved!')
+  const handleThemeChange = async (t) => {
+    const previousTheme = theme
+    setThemePreference(t)
+    updateUser({ theme: t })
+
+    try {
+      await api.put('/users/me', { theme: t })
+      showSuccess('Theme preference saved!')
+    } catch (err) {
+      setThemePreference(previousTheme)
+      updateUser({ theme: previousTheme })
+      showError(err.response?.data?.message || 'Failed to save theme preference')
+    }
   }
 
   const handlePrivacyToggle = async () => {
@@ -184,7 +193,7 @@ export default function Settings() {
         @keyframes st-fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
         @keyframes st-toast  { 0%{opacity:0;transform:translateY(-6px)} 10%,90%{opacity:1;transform:translateY(0)} 100%{opacity:0} }
 
-        .st-root { min-height:100vh; background:#080808; font-family:'DM Sans',sans-serif; padding: 48px 20px; }
+        .st-root { min-height:100vh; background:var(--theme-bg); font-family:'DM Sans',sans-serif; padding: 48px 20px; transition: background-color 0.18s ease; }
         .st-inner { max-width: 860px; margin: 0 auto; }
 
         .st-heading {
@@ -232,7 +241,7 @@ export default function Settings() {
         /* Card */
         .st-card {
           flex: 1; min-width: 0;
-          background: #0d0d0d;
+          background: var(--theme-surface);
           border: 1px solid rgba(255,255,255,0.07);
           border-radius: 18px; padding: 28px;
           animation: st-fadeUp 0.25s cubic-bezier(0.16,1,0.3,1) both;

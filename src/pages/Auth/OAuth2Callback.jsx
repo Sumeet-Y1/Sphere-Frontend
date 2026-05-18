@@ -27,7 +27,8 @@ export default function OAuth2Callback() {
         email: res.data.email,
         role: res.data.role,
         avatarUrl: res.data.avatarUrl,
-        authProvider: res.data.authProvider
+        authProvider: res.data.authProvider,
+        theme: res.data.theme
       })
       navigate('/')
     } catch (err) {
