@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { useState, useEffect, useRef } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import api from '../../api/axios'
 import { useAuth } from '../../context/AuthContext'
 
@@ -23,9 +23,57 @@ export default function Home() {
   const [loading, setLoading] = useState(true)
   const [sort, setSort] = useState('hot')
   const [search, setSearch] = useState('')
+  const [searching, setSearching] = useState(false)
+  const [searchOpen, setSearchOpen] = useState(false)
+  const [searchResults, setSearchResults] = useState({ users: [], communities: [], posts: [] })
   const { user } = useAuth()
+  const navigate = useNavigate()
+  const searchRef = useRef(null)
 
   useEffect(() => { fetchPosts(); fetchCommunities() }, [])
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setSearchOpen(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  useEffect(() => {
+    const query = search.trim()
+
+    if (!query) {
+      setSearchResults({ users: [], communities: [], posts: [] })
+      setSearching(false)
+      setSearchOpen(false)
+      return
+    }
+
+    const timeoutId = setTimeout(async () => {
+      try {
+        setSearching(true)
+        const res = await api.get(`/search?query=${encodeURIComponent(query)}`)
+        setSearchResults({
+          users: res.data?.users || [],
+          communities: res.data?.communities || [],
+          posts: res.data?.posts || [],
+        })
+        setSearchOpen(true)
+      } catch (err) {
+        console.error(err)
+        setSearchResults({ users: [], communities: [], posts: [] })
+        setSearchOpen(true)
+      } finally {
+        setSearching(false)
+      }
+    }, 220)
+
+    return () => clearTimeout(timeoutId)
+  }, [search])
 
   const fetchPosts = async () => {
     try { const res = await api.get('/posts'); setPosts(res.data) }
@@ -36,6 +84,12 @@ export default function Home() {
   const fetchCommunities = async () => {
     try { const res = await api.get('/communities'); setCommunities(res.data) }
     catch (err) { console.error(err) }
+  }
+
+  const handleSearchSelect = (path) => {
+    setSearch('')
+    setSearchOpen(false)
+    navigate(path)
   }
 
   const handleVote = async (postId, voteType) => {
@@ -64,6 +118,8 @@ export default function Home() {
       p.communityName?.toLowerCase().includes(search.toLowerCase())
     )
     : sortedPosts
+
+  const hasSearchResults = searchResults.users.length > 0 || searchResults.communities.length > 0 || searchResults.posts.length > 0
 
   return (
     <>
@@ -108,6 +164,108 @@ export default function Home() {
         }
         .sinp::placeholder { color: rgba(255,255,255,0.32); }
         .sinp:focus { border-color: rgba(255,255,255,0.25); background: rgba(255,255,255,0.075); box-shadow: 0 0 0 3px rgba(255,255,255,0.035); }
+        .search-pop {
+          position: absolute;
+          top: calc(100% + 10px);
+          left: 0;
+          right: 0;
+          background: rgba(10,10,10,0.98);
+          border: 1px solid rgba(255,255,255,0.1);
+          border-radius: 16px;
+          box-shadow: 0 22px 60px rgba(0,0,0,0.45);
+          overflow: hidden;
+          z-index: 12;
+          backdrop-filter: blur(18px);
+        }
+        .search-pop-scroll { max-height: min(72vh, 560px); overflow-y: auto; }
+        .search-sec { padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.06); }
+        .search-sec:last-child { border-bottom: none; }
+        .search-sec-title {
+          padding: 8px 16px 6px;
+          font-size: 10px;
+          font-weight: 700;
+          letter-spacing: 0.16em;
+          text-transform: uppercase;
+          color: rgba(255,255,255,0.34);
+        }
+        .search-item {
+          width: 100%;
+          display: flex;
+          align-items: flex-start;
+          gap: 12px;
+          padding: 12px 16px;
+          background: transparent;
+          border: none;
+          text-align: left;
+          cursor: pointer;
+          transition: background 0.15s ease;
+          color: inherit;
+        }
+        .search-item:hover { background: rgba(255,255,255,0.05); }
+        .search-avatar {
+          width: 42px;
+          height: 42px;
+          border-radius: 50%;
+          object-fit: cover;
+          flex-shrink: 0;
+          border: 1px solid rgba(255,255,255,0.1);
+          background: rgba(255,255,255,0.04);
+        }
+        .search-community-badge {
+          width: 42px;
+          height: 42px;
+          border-radius: 12px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: #fff;
+          font-size: 15px;
+          font-weight: 700;
+          flex-shrink: 0;
+        }
+        .search-thumb {
+          width: 56px;
+          height: 56px;
+          border-radius: 10px;
+          object-fit: cover;
+          flex-shrink: 0;
+          border: 1px solid rgba(255,255,255,0.08);
+          background: rgba(255,255,255,0.04);
+        }
+        .search-copy { min-width: 0; flex: 1; }
+        .search-title {
+          font-size: 13px;
+          font-weight: 600;
+          color: rgba(255,255,255,0.88);
+          line-height: 1.45;
+          margin-bottom: 3px;
+        }
+        .search-sub {
+          font-size: 11.5px;
+          color: rgba(255,255,255,0.42);
+          line-height: 1.5;
+          margin-bottom: 2px;
+        }
+        .search-meta {
+          font-size: 11px;
+          color: rgba(255,255,255,0.28);
+          line-height: 1.5;
+        }
+        .search-empty {
+          padding: 18px 16px;
+          font-size: 12px;
+          color: rgba(255,255,255,0.34);
+          text-align: center;
+        }
+        .search-loading {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          padding: 18px 16px;
+          color: rgba(255,255,255,0.45);
+          font-size: 12px;
+        }
 
         .hc { flex: 1; display: flex; overflow: hidden; }
 
@@ -269,11 +427,125 @@ export default function Home() {
 
         {/* Search row */}
         <div className="sr">
-          <div className="sw">
+          <div className="sw" ref={searchRef}>
             <svg className="si" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
-            <input className="sinp" placeholder="Search posts, communities, users..." value={search} onChange={e => setSearch(e.target.value)} />
+            <input
+              className="sinp"
+              placeholder="Search posts, communities, users..."
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              onFocus={() => { if (search.trim()) setSearchOpen(true) }}
+            />
+
+            {searchOpen && search.trim() && (
+              <div className="search-pop">
+                <div className="search-pop-scroll">
+                  {searching ? (
+                    <div className="search-loading">
+                      <svg className="spin" style={{ width: 14, height: 14 }} viewBox="0 0 24 24" fill="none">
+                        <circle cx="12" cy="12" r="10" stroke="white" strokeWidth="3" style={{ opacity: 0.2 }} />
+                        <path fill="white" d="M4 12a8 8 0 018-8v8z" style={{ opacity: 0.6 }} />
+                      </svg>
+                      Searching...
+                    </div>
+                  ) : !hasSearchResults ? (
+                    <div className="search-empty">No users, communities, or posts matched that search.</div>
+                  ) : (
+                    <>
+                      {searchResults.users.length > 0 && (
+                        <div className="search-sec">
+                          <div className="search-sec-title">Users</div>
+                          {searchResults.users.map(result => (
+                            <button
+                              key={`user-${result.id}`}
+                              className="search-item"
+                              onClick={() => handleSearchSelect(`/profile/${result.username}`)}
+                            >
+                              <img
+                                src={result.avatarUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${result.username}`}
+                                alt=""
+                                className="search-avatar"
+                              />
+                              <div className="search-copy">
+                                <div className="search-title">@{result.username}</div>
+                                <div className="search-sub">
+                                  {result.bio || (result.privateAccount ? 'Private profile' : 'Sphere user')}
+                                </div>
+                                <div className="search-meta">
+                                  {result.followersCount} followers · {result.followingCount} following
+                                </div>
+                              </div>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+
+                      {searchResults.communities.length > 0 && (
+                        <div className="search-sec">
+                          <div className="search-sec-title">Communities</div>
+                          {searchResults.communities.map(result => (
+                            <button
+                              key={`community-${result.id}`}
+                              className="search-item"
+                              onClick={() => handleSearchSelect(`/community/${result.name}`)}
+                            >
+                              {result.avatarUrl ? (
+                                <img src={result.avatarUrl} alt="" className="search-avatar" />
+                              ) : (
+                                <div className="search-community-badge" style={{ background: communityColor(result.name) }}>
+                                  {result.name?.charAt(0)?.toUpperCase()}
+                                </div>
+                              )}
+                              <div className="search-copy">
+                                <div className="search-title">s/{result.name}</div>
+                                <div className="search-sub">{result.description || 'Community on Sphere'}</div>
+                                <div className="search-meta">{result.memberCount} members</div>
+                              </div>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+
+                      {searchResults.posts.length > 0 && (
+                        <div className="search-sec">
+                          <div className="search-sec-title">Posts</div>
+                          {searchResults.posts.map(result => {
+                            const previewImage = result.imageUrl || result.mediaUrls?.[0] || ''
+                            return (
+                              <button
+                                key={`post-${result.id}`}
+                                className="search-item"
+                                onClick={() => handleSearchSelect(`/post/${result.id}`)}
+                              >
+                                {previewImage ? (
+                                  <img src={previewImage} alt="" className="search-thumb" />
+                                ) : (
+                                  <div className="search-community-badge" style={{ background: communityColor(result.communityName || 'P'), width: 56, height: 56 }}>
+                                    P
+                                  </div>
+                                )}
+                                <div className="search-copy">
+                                  <div className="search-title">{result.title}</div>
+                                  <div className="search-sub">
+                                    by @{result.authorUsername} in s/{result.communityName}
+                                  </div>
+                                  <div className="search-meta">
+                                    {(result.content || 'Open post preview').slice(0, 92)}
+                                    {(result.content || '').length > 92 ? '...' : ''}
+                                  </div>
+                                </div>
+                              </button>
+                            )
+                          })}
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
