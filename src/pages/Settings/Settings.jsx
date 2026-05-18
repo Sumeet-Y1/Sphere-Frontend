@@ -527,12 +527,11 @@ export default function Settings() {
                     {[
                       { id:'dark',  label:'Dark',  desc:'Pure black',  dot:'#080808' },
                       { id:'dim',   label:'Dim',   desc:'Dark gray',   dot:'#1a1a1a' },
-                      { id:'light', label:'Light', desc:'Coming soon', dot:'#f5f5f5', disabled:true },
+                      { id:'light', label:'Light', desc:'Soft white',  dot:'#f5f5f5' },
                     ].map(t => (
                       <button
                         key={t.id}
                         onClick={() => !t.disabled && handleThemeChange(t.id)}
-                        disabled={t.disabled}
                         className={`st-theme-card${theme === t.id ? ' selected' : ''}`}
                       >
                         <div style={{ width:28,height:28,borderRadius:8,background:t.dot,border:'1px solid rgba(255,255,255,0.12)',marginBottom:10 }} />

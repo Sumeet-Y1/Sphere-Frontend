@@ -21,6 +21,16 @@ body[data-theme="dim"] {
   --theme-tone: 0.94;
 }
 
+html[data-theme="light"],
+body[data-theme="light"] {
+  --theme-bg: #f5f5f3;
+  --theme-shell-bg: #ffffff;
+  --theme-surface: #f1f1ee;
+  --theme-surface-muted: #e8e8e3;
+  --theme-text: #101010;
+  --theme-tone: 1;
+}
+
 html,
 body,
 #root {
@@ -46,6 +56,18 @@ body {
 
 body[data-theme="dim"] .app-theme-shell {
   filter: brightness(1.05) saturate(0.92);
+}
+
+body[data-theme="light"] .app-theme-shell {
+  filter: invert(1) hue-rotate(180deg);
+}
+
+body[data-theme="light"] .app-theme-shell img,
+body[data-theme="light"] .app-theme-shell video,
+body[data-theme="light"] .app-theme-shell iframe,
+body[data-theme="light"] .app-theme-shell canvas,
+body[data-theme="light"] .app-theme-shell [data-no-theme-invert="true"] {
+  filter: invert(1) hue-rotate(180deg);
 }
 
 .app-theme-surface {
