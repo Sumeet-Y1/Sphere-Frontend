@@ -107,7 +107,7 @@ const categories = [
       { q: 'I\'m not receiving the OTP email.', a: 'Check your spam/junk folder. Make sure you typed your email correctly. You can request a new OTP after 60 seconds.' },
       { q: 'My images are not uploading.', a: 'Make sure your file is under 5MB and is a JPG, PNG, or WebP format. Try a different browser if the issue continues.' },
       { q: 'Notifications are not working.', a: 'Make sure notifications are enabled in Settings → Notifications. Also check your browser notification permissions.' },
-      { q: 'How do I report a bug?', a: 'Use the feedback button in the app or email us at support@sphere.com. Please include screenshots and steps to reproduce the issue.' },
+      { q: 'How do I report a bug?', a: 'Use the feedback button in the app or email us at privacysupportsphere@gmail.com. Please include screenshots and steps to reproduce the issue.' },
     ]
   }
 ]
@@ -423,7 +423,7 @@ export default function Help() {
               <div style={{ fontSize: 16, fontWeight: 600, color: 'rgba(255,255,255,0.85)', marginBottom: 6 }}>Still need help?</div>
               <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.3)', lineHeight: 1.6 }}>Can't find what you're looking for? Our support team is here to help.</div>
             </div>
-            <a href="mailto:support@sphere.com" className="help-contact-btn">Contact Support</a>
+            <a href="mailto:privacysupportsphere@gmail.com" className="help-contact-btn">Contact Support</a>
           </div>
 
           {/* Footer */}

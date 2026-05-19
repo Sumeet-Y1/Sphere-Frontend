@@ -14,7 +14,7 @@ export default function PostDetail() {
   const [replyTo, setReplyTo] = useState(null)
 
   useEffect(() => {
-    fetchPost()
+    fetchPost()  
     fetchComments()
   }, [postId])
 

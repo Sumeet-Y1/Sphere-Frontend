@@ -74,7 +74,7 @@ const sections = [
       { heading: 'Right to access', body: 'You have the right to request a copy of the personal data we hold about you. You can access most of your data directly from your Profile and Settings pages.' },
       { heading: 'Right to correction', body: 'You can update or correct your personal information at any time through your Settings page. If you need help correcting data you cannot edit yourself, contact our support team.' },
       { heading: 'Right to deletion', body: 'You can delete your account and associated data at any time from Settings → Account. You may also contact us to request deletion of specific data.' },
-      { heading: 'Right to data portability', body: 'You can request an export of your data in a machine-readable format. Contact us at privacy@sphere.com to make a data portability request.' },
+      { heading: 'Right to data portability', body: 'You can request an export of your data in a machine-readable format. Contact us at privacysupportsphere@gmail.com to make a data portability request.' },
       { heading: 'Right to object', body: 'You have the right to object to certain types of data processing, including direct marketing. Contact us if you wish to exercise this right.' },
     ]
   },
@@ -87,8 +87,8 @@ const sections = [
       </svg>
     ),
     content: [
-      { heading: 'Privacy enquiries', body: 'If you have any questions, concerns, or requests regarding this Privacy Policy or how we handle your data, please contact our privacy team at privacy@sphere.com.' },
-      { heading: 'General support', body: 'For general account or platform support, reach out to support@sphere.com or visit our Help Center.' },
+      { heading: 'Privacy enquiries', body: 'If you have any questions, concerns, or requests regarding this Privacy Policy or how we handle your data, please contact our privacy team at privacysupportsphere@gmail.com.' },
+      { heading: 'General support', body: 'For general account or platform support, reach out to privacysupportsphere@gmail.com or visit our Help Center.' },
       { heading: 'Response time', body: 'We aim to respond to all privacy-related requests within 5 business days. For data deletion or portability requests, the process may take up to 30 days.' },
       { heading: 'Registered address', body: 'Sphere, Inc. — For official correspondence, please contact us via email. We will provide our registered address upon request.' },
     ]
@@ -238,7 +238,7 @@ export default function PrivacyPolicy() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             <p style={{ fontSize: 13, color: textSecondary, lineHeight: 1.7, margin: 0 }}>
-              This Privacy Policy explains how Sphere, Inc. collects, uses, and protects your information when you use our platform. By using Sphere, you agree to the practices described here. If you have questions, contact us at <a href="mailto:privacy@sphere.com" style={{ color: '#6366f1', textDecoration: 'none' }}>privacy@sphere.com</a>.
+              This Privacy Policy explains how Sphere, Inc. collects, uses, and protects your information when you use our platform. By using Sphere, you agree to the practices described here. If you have questions, contact us at <a href="privacysupportsphere@gmail.com" style={{ color: '#6366f1', textDecoration: 'none' }}>privacysupportsphere@gmail.com</a>.
             </p>
           </div>
 
@@ -300,7 +300,7 @@ export default function PrivacyPolicy() {
               <Link to="/about" className="pp-footer-link" style={{ color: textMuted }}>About</Link>
               <Link to="/help" className="pp-footer-link" style={{ color: textMuted }}>Help</Link>
               <Link to="/legal" className="pp-footer-link" style={{ color: textMuted }}>Terms</Link>
-              <a href="mailto:privacy@sphere.com" className="pp-footer-link" style={{ color: textMuted }}>Contact</a>
+              <a href="mailto:privacysupportsphere@gmail.com" className="pp-footer-link" style={{ color: textMuted }}>Contact</a>
             </div>
             <p style={{ fontSize: 11, color: textMuted }}>Sphere, Inc © {new Date().getFullYear()}. All rights reserved.</p>
           </div>

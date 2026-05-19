@@ -104,8 +104,8 @@ export default function Login() {
               <p style={{ fontWeight: 500, marginBottom: '4px' }}>🚫 Your account has been banned.</p>
               <p style={{ color: 'rgba(255,200,200,0.6)', fontSize: '12px' }}>
                 If you believe this is a mistake, please contact our support team at{' '}
-                <a href="mailto:support@sphere.com" style={{ color: 'rgba(255,200,200,0.9)', textDecoration: 'underline' }}>
-                  support@sphere.com
+                <a href="mailto:privacysupportsphere@gmail.com" style={{ color: 'rgba(255,200,200,0.9)', textDecoration: 'underline' }}>
+                  privacysupportsphere@gmail.com
                 </a>{' '}
                 to appeal your ban.
               </p>
