@@ -7,7 +7,7 @@ import { GOOGLE_OAUTH_URL } from '../../config/endpoints'
 const videos = ['/video1.mp4', '/video2.mp4']
 
 export default function Login() {
-  const [form, setForm] = useState({ email: '', password: '' })
+  const [form, setForm] = useState({ identifier: '', password: '' })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
@@ -118,8 +118,8 @@ export default function Login() {
 
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
         <div className="anim-3">
-          <label className="field-label">Email</label>
-          <input type="email" name="email" value={form.email} onChange={handleChange} className="glass-input" placeholder="you@example.com" required />
+          <label className="field-label">Email or Username</label>
+          <input type="text" name="identifier" value={form.identifier} onChange={handleChange} className="glass-input" placeholder="you@example.com or yourusername" autoComplete="username" required />
         </div>
 
         <div className="anim-4">

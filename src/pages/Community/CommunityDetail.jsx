@@ -409,7 +409,7 @@ export default function CommunityDetail() {
               <div className="wgt-hdr"><span className="wgt-ttl">About</span></div>
               <div className="wgt-bd">
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
-                  <div style={{ width: 36, height: 36, borderRadius: 10, background: `linear-gradient(135deg, ${accentColor}, ${accentColor}88)`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, fontWeight: 700, color: '#fff', flexShrink: 0 }}>
+                  <div style={{ width: 36, height: 36, borderRadius: 10, background: `linear-gradient(135deg, ${accentColor}, ${accentColor}88)`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, fontWeight: 700, color: '#fff', flexShrink: 0, overflow: 'hidden' }}>
                     {community.name.charAt(0).toUpperCase()}
                   </div>
                   <div>
@@ -425,7 +425,7 @@ export default function CommunityDetail() {
                 <button
                   onClick={handleJoin}
                   disabled={joining}
-                  style={{ display:'block', width:'100%', textAlign:'center', marginTop:14, padding:'9px 0', borderRadius:9, border:'none', cursor:'pointer', fontFamily:"'DM Sans',sans-serif", fontSize:12, fontWeight:600, transition:'all 0.18s', background: community.joined ? 'rgba(244,63,94,0.08)' : '#fff', color: community.joined ? '#f43f5e' : '#000', border: community.joined ? '1px solid rgba(244,63,94,0.2)' : 'none' }}
+                  style={{ display:'block', width:'100%', textAlign:'center', marginTop:14, padding:'9px 0', borderRadius:9, cursor:'pointer', fontFamily:"'DM Sans',sans-serif", fontSize:12, fontWeight:600, transition:'all 0.18s', background: community.joined ? 'rgba(244,63,94,0.08)' : '#fff', color: community.joined ? '#f43f5e' : '#000', border: community.joined ? '1px solid rgba(244,63,94,0.2)' : 'none' }}
                 >
                   {joining ? '...' : community.joined ? 'Leave Community' : 'Join Community'}
                 </button>
